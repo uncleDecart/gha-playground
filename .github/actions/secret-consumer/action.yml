@@ -8,7 +8,8 @@ inputs:
 
 runs:
   using: 'composite'
-  - name: Print Secret
-    run: |
-      echo "${{ inputs.secret }}"
-    shell: bash
+  steps:
+    - name: Print Secret
+      run: |
+        echo "${{ inputs.secret }}"
+      shell: bash
