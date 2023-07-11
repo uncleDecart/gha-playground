@@ -1,0 +1,14 @@
+name: 'Action consuming your secret'
+description: 'Test for passing secrets to composite actions'
+
+inputs:
+  secret:
+    required: true
+    type: string
+
+runs:
+  using: 'composite'
+  - name: Print Secret
+    run: |
+      echo "${{ inputs.secret }}"
+    shell: bash
