@@ -1,0 +1,41 @@
+name: call eden command
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force build even if no changes'
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+        - name: Build
+          uses: docker/build-push-action@v3
+          with:
+            context: .
+            file: ./Dockerfile
+            push: false
+            tags: |
+                test/tag:12345
+            platforms: linux/amd64
+            load: true
+        - name: Export Image
+          run: docker save test/tag:12345 > /tmp/test-tag.tar
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v2
+          with:
+            name: test-tag
+            path: /tmp/test-tag.tar
+    test_suite_pr:
+      needs: build
+      uses: deitch/actions-test/.github/workflows/test.yml@master
+      with:
+        image: test/tag:12345
+        artifact_name: test-tag
