@@ -1,0 +1,20 @@
+name: checkout for specific branch
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Print Version file
+        run: |
+          cat version.txt
